@@ -1,3 +1,4 @@
+## Interface: 11303
 ## Title: Improved Raid Frame Status Text
 ## Notes: Improves the status text in the Blizzard raid frames
 ## Version: @project-version@

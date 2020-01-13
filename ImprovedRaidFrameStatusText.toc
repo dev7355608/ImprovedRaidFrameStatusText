@@ -4,5 +4,6 @@
 ## Version: @project-version@
 ## Author: dev7355608
 ## X-Curse-Project-ID: 358454
+## X-WoWI-ID: 25487
 
 ImprovedRaidFrameStatusText.xml

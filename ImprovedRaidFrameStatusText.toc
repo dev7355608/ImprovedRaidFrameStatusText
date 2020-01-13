@@ -1,0 +1,7 @@
+## Title: Improved Raid Frame Status Text
+## Notes: Improves the status text in the Blizzard raid frames
+## Version: @project-version@
+## Author: dev7355608
+## X-Curse-Project-ID: 358454
+
+ImprovedRaidFrameStatusText.xml

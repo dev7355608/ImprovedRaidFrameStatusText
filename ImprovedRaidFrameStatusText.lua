@@ -36,6 +36,14 @@ local FEIGN =
     zhTW = "假死"
 })[GetLocale()]
 
+local AFK
+
+if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+    AFK = DEFAULT_AFK_MESSAGE
+else
+    AFK = CHAT_MSG_AFK
+end
+
 hooksecurefunc(
     "CompactUnitFrame_UpdateStatusText",
     function(frame)
@@ -59,7 +67,7 @@ hooksecurefunc(
             frame.statusText:SetText(PLAYER_OFFLINE)
             frame.statusText:Show()
         elseif UnitIsAFK(unit) then
-            frame.statusText:SetText(DEFAULT_AFK_MESSAGE)
+            frame.statusText:SetText(AFK)
             frame.statusText:Show()
         elseif UnitIsGhost(displayedUnit) then
             frame.statusText:SetText(GHOST)

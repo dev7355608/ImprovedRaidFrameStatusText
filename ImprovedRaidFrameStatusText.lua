@@ -1,5 +1,4 @@
 local UnitIsConnected = UnitIsConnected
-local UnitIsDead = UnitIsDead
 local UnitIsFeignDeath = UnitIsFeignDeath
 local UnitIsGhost = UnitIsGhost
 local UnitIsAFK = UnitIsAFK
@@ -44,46 +43,46 @@ else
     AFK = CHAT_MSG_AFK
 end
 
+local LOSS_OF_CONTROL_DISPLAY_POSSESS = LOSS_OF_CONTROL_DISPLAY_POSSESS
+local LOSS_OF_CONTROL_DISPLAY_CHARM = LOSS_OF_CONTROL_DISPLAY_CHARM
+
 hooksecurefunc(
     "CompactUnitFrame_UpdateStatusText",
     function(frame)
-        if frame:IsForbidden() then
-            return
-        end
+        local statusText = frame.statusText
 
-        if not frame.statusText then
+        if not statusText then
             return
         end
 
         if not frame.optionTable.displayStatusText then
-            frame.statusText:Hide()
             return
         end
 
         local unit = frame.unit
-        local displayedUnit = frame.displayedUnit
 
         if not UnitIsConnected(unit) then
-            frame.statusText:SetText(PLAYER_OFFLINE)
-            frame.statusText:Show()
-        elseif UnitIsAFK(unit) then
-            frame.statusText:SetText(AFK)
-            frame.statusText:Show()
-        elseif UnitIsGhost(displayedUnit) then
-            frame.statusText:SetText(GHOST)
-            frame.statusText:Show()
+            return
+        end
+
+        if UnitIsAFK(unit) then
+            statusText:SetText(AFK)
+            statusText:Show()
+            return
+        end
+
+        local displayedUnit = frame.displayedUnit
+
+        if UnitIsGhost(displayedUnit) then
+            statusText:SetText(GHOST)
         elseif UnitIsPossessed(displayedUnit) then
-            frame.statusText:SetText(LOSS_OF_CONTROL_DISPLAY_POSSESS)
-            frame.statusText:Show()
+            statusText:SetText(LOSS_OF_CONTROL_DISPLAY_POSSESS)
+            statusText:Show()
         elseif UnitIsCharmed(displayedUnit) then
-            frame.statusText:SetText(LOSS_OF_CONTROL_DISPLAY_CHARM)
-            frame.statusText:Show()
+            statusText:SetText(LOSS_OF_CONTROL_DISPLAY_CHARM)
+            statusText:Show()
         elseif UnitIsFeignDeath(displayedUnit) then
-            frame.statusText:SetText(FEIGN)
-            frame.statusText:Show()
-        elseif UnitIsDead(displayedUnit) then
-            frame.statusText:SetText(DEAD)
-            frame.statusText:Show()
+            statusText:SetText(FEIGN)
         end
     end
 )
@@ -91,10 +90,6 @@ hooksecurefunc(
 hooksecurefunc(
     "CompactUnitFrame_OnEvent",
     function(self, event, ...)
-        if self:IsForbidden() then
-            return
-        end
-
         if event == self.updateAllEvent and (not self.updateAllFilter or self.updateAllFilter(self, event, ...)) then
             return
         end
@@ -104,6 +99,20 @@ hooksecurefunc(
         if unit == self.unit or unit == self.displayedUnit then
             if event == "UNIT_AURA" or event == "UNIT_FLAGS" then
                 CompactUnitFrame_UpdateStatusText(self)
+            end
+        end
+    end
+)
+hooksecurefunc(
+    "CompactPartyFrame_Generate",
+    function()
+        local name = CompactPartyFrame:GetName()
+
+        for i = 1, MEMBERS_PER_RAID_GROUP do
+            local frame = _G[name .. "Member" .. i]
+
+            if UnitExists(frame.displayedUnit) then
+                CompactUnitFrame_UpdateStatusText(frame)
             end
         end
     end
